@@ -81,6 +81,32 @@ describe('Restaurant and Menu Models', () => {
         expect((await Menu.findAll()).length).toBe(3);
     });
 
+    test("can update Restaurants", async () => {
+        const ritz = await Restaurant.create({
+            name: "The Ritz",
+            location: "London",
+            cuisine: "Fast Food" // Oh no! incorrect value!
+        });
+
+        await ritz.update({
+            cuisine: "Pretentious"
+        });
+
+        expect(ritz.name).toBe("The Ritz");
+        expect(ritz.location).toBe("London");
+        expect(ritz.cuisine).toBe("Pretentious");
+    });
+
+    test("can update Menus", async () => {
+        const ritz_menu = await Menu.create({
+            title: "Nando's Menu" // Oh no! incorrect value!
+        });
+
+        await ritz_menu.update({ title: "Ritz' Menu" });
+
+        expect(ritz_menu.title).toBe("Ritz' Menu");
+    });
+
     test('can delete Restaurants', async () => {
         const delete_me = await Restaurant.create({
             name: "Five Guys",
@@ -105,5 +131,15 @@ describe('Restaurant and Menu Models', () => {
         expect(nandos.name).toBe("Nandos");
         expect(nandos.location).toBe("Stevenage");
         expect(nandos.cuisine).toBe("Fast Food");
+    });
+
+    test("can delete Menu", async () => {
+        await Menu.create({ title: "Five Guys' Menu" });
+        const delete_me = await Menu.create({ title: "McDonald's Menu" });
+        await Menu.create({ title: "Nando's Menu" });
+
+        await delete_me.destroy();
+
+        expect((await Menu.findAll()).length).toBe(2);
     });
 })
